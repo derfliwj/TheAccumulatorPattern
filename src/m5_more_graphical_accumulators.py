@@ -9,8 +9,8 @@ Additionally, it emphasizes that you must
 before you can implement a solution to the problem in Python. 
   
 Authors: David Mutchler, Dave Fisher, Valerie Galluzzi, Amanda Stouder,
-         their colleagues and PUT_YOUR_NAME_HERE.
-"""  # TODO: 1. PUT YOUR NAME IN THE ABOVE LINE.
+         their colleagues and Wesley Derflinger.
+"""  # DONE: 1. PUT YOUR NAME IN THE ABOVE LINE.
 
 import rosegraphics as rg
 
@@ -27,8 +27,8 @@ import rosegraphics as rg
 # ----------------------------------------------------------------------
 def main():
     """ Calls the   TEST   functions in this module. """
-    run_test_draw_squares_from_circle()
-    run_test_draw_circles_from_rectangle()
+    #run_test_draw_squares_from_circle()
+    #run_test_draw_circles_from_rectangle()
     run_test_draw_lines_from_rectangles()
 
 
@@ -97,8 +97,32 @@ def draw_squares_from_circle(n, circle, window):
       :type circle: rg.Circle
       :type window: rg.RoseWindow
     """
+
+    center = circle.center
+    rad = circle.radius
+
+    circle.attach_to(window)
+
+    point1 = rg.Point(center.x - rad, center.y + rad)
+    point2 = rg.Point(center.x + rad, center.y - rad)
+    rectangle = rg.Rectangle(point1, point2)
+    rectangle.attach_to(window)
+
+    center_x = center.x
+    center_y = center.y
+    for _ in range(n-1):
+
+        center_x = center_x + rad
+        center_y = center_y + rad
+
+        point1 = rg.Point(center_x - rad, center_y + rad)
+        point2 = rg.Point(center_x + rad, center_y - rad)
+        rectangle = rg.Rectangle(point1, point2)
+        rectangle.attach_to(window)
+
+    window.render()
     # ------------------------------------------------------------------
-    # TODO: 2. Implement and test this function.
+    # DONE: 2. Implement and test this function.
     #          Tests have been written for you (above).
     #
     # CONSIDER using the ACCUMULATOR IN GRAPHICS pattern,
@@ -121,8 +145,35 @@ def run_test_draw_circles_from_rectangle():
     print('  See the graphics windows that pop up.')
     print('--------------------------------------------------')
 
+    window = rg.RoseWindow(720, 500)
+
+    # Test 1:
+    rectangle = rg.Rectangle(rg.Point(400, 250), rg.Point(440, 325))
+    rectangle.fill_color = 'dark green'
+    rectangle.outline_color = 'black'
+    rectangle.outline_thickness = 5
+    draw_circles_from_rectangle(4, 5, rectangle, window)
+
+    # Test 2:
+    rectangle = rg.Rectangle(rg.Point(500, 400), rg.Point(600, 450))
+    rectangle.fill_color = 'blue'
+    rectangle.outline_color = 'red'
+    rectangle.outline_thickness = 3
+    draw_circles_from_rectangle(8, 3, rectangle, window)
+
+    window.close_on_mouse_click()
+
+    # Test 3:
+    window2 = rg.RoseWindow(620, 380)
+    rectangle = rg.Rectangle(rg.Point(350, 280), rg.Point(375, 330))
+    rectangle.fill_color = 'yellow'
+    rectangle.outline_color = 'brown'
+    rectangle.outline_thickness = 5
+    draw_circles_from_rectangle(6, 10, rectangle, window2)
+
+    window2.close_on_mouse_click()
     # ------------------------------------------------------------------
-    # TODO: 3. Implement this TEST function.
+    # DONE: 3. Implement this TEST function.
     #   It TESTS the  draw_circles_from_rectangle  function
     #   defined below.  Include at least **   3   ** tests, of which
     #      ***  at least TWO tests are on ONE window and
@@ -175,8 +226,51 @@ def draw_circles_from_rectangle(m, n, rectangle, window):
       :type rectangle: rg.Rectangle
       :type window: rg.RoseWindow
     """
+
+    rectangle.attach_to(window)
+    point1 = rectangle.corner_1
+    point2 = rectangle.corner_2
+
+    rad = (point2.y - point1.y)/2
+    center = rg.Point(point1.x - rad, point1.y + rad)
+
+    x_center = center.x
+    y_center = center.y
+
+    circle = rg.Circle(center, rad)
+
+    circle.attach_to(window)
+    for _ in range(m):
+        center = rg.Point(x_center, y_center)
+        circle = rg.Circle(center, rad)
+        circle.fill_color = rectangle.fill_color
+        circle.attach_to(window)
+
+        x_center = x_center - 2 * rad
+
+
+
+    rad = (point2.x - point1.x) / 2
+    center = rg.Point(point1.x + rad, point1.y - rad)
+
+    x_center = center.x
+    y_center = center.y
+
+    circle = rg.Circle(center, rad)
+
+    circle.attach_to(window)
+    for _ in range(n):
+        center = rg.Point(x_center, y_center)
+        circle = rg.Circle(center, rad)
+        circle.outline_color = rectangle.outline_color
+        circle.attach_to(window)
+
+        y_center = y_center - 2 * rad
+
+
+    window.render()
     # ------------------------------------------------------------------
-    # TODO: 4. Implement and test this function.
+    # DONE: 4. Implement and test this function.
     #          Tests have been written for you (above).
     #
     # CONSIDER using the ACCUMULATOR IN GRAPHICS pattern,
@@ -267,6 +361,42 @@ def draw_lines_from_rectangles(rectangle1, rectangle2, n, window):
       :type n: int
       :type window: rg.RoseWindow
       """
+
+    rectangle1.attach_to(window)
+    rectangle2.attach_to(window)
+
+    point1 = rectangle1.corner_1
+    point2 = rectangle1.corner_2
+
+    center1 = rg.Point(((point2.x - point1.x)/2) + point1.x, ((point2.y - point1.y)/2) + point1.y)
+
+    point3 = rectangle2.corner_1
+    point4 = rectangle2.corner_2
+
+    center2 = rg.Point(((point4.x - point3.x)/2) + point3.x, ((point4.y - point3.y)/2) + point3.y)
+
+    line = rg.Line(center1, center2)
+
+
+    line.attach_to(window)
+    for k in range(n):
+
+        line = rg.Line(center1, center2)
+        line.thickness = 5
+        if k % 2 == 0:
+            line.color = rectangle2.outline_color
+        else:
+            line.color = rectangle1.outline_color
+
+        line.attach_to(window)
+
+        center1.x = center1.x - (((point2.x - point1.x) / 2) + point1.x)
+        center1.y = center1.y + (((point2.y - point1.y) / 2) + point1.y)
+
+        center2.x = center2.x - (((point4.x - point3.x) / 2) + point3.x)
+        center2.y = center2.y + (((point4.y - point3.y) / 2) + point3.y)
+
+    window.render()
     # ------------------------------------------------------------------
     # TODO: 5. Implement and test this function.
     #          Tests have been written for you (above).
