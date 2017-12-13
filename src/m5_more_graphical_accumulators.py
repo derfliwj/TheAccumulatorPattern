@@ -27,8 +27,8 @@ import rosegraphics as rg
 # ----------------------------------------------------------------------
 def main():
     """ Calls the   TEST   functions in this module. """
-    run_test_draw_squares_from_circle()
-    run_test_draw_circles_from_rectangle()
+    #run_test_draw_squares_from_circle()
+    #run_test_draw_circles_from_rectangle()
     run_test_draw_lines_from_rectangles()
 
 
@@ -365,40 +365,49 @@ def draw_lines_from_rectangles(rectangle1, rectangle2, n, window):
     rectangle1.attach_to(window)
     rectangle2.attach_to(window)
 
-    point1 = rectangle1.corner_1
-    point2 = rectangle1.corner_2
+    upper_left1 = rectangle1.corner_1
+    lower_right1 = rectangle1.corner_2
 
-    center1 = rg.Point(((point2.x - point1.x)/2) + point1.x, ((point2.y - point1.y)/2) + point1.y)
+    lower_left1 = rg.Point(rectangle1.corner_1.x, rectangle1.corner_2.y)
 
-    point3 = rectangle2.corner_1
-    point4 = rectangle2.corner_2
+    center1 = rg.Point(((lower_right1.x - lower_left1.x) / 2) + lower_left1.x,
+                       ((lower_right1.y - upper_left1.y) / 2) + upper_left1.y)
+    upper_left2 = rectangle2.corner_1
+    lower_right2 = rectangle2.corner_2
 
-    center2 = rg.Point(((point4.x - point3.x)/2) + point3.x, ((point4.y - point3.y)/2) + point3.y)
+    lower_left2 = rg.Point(upper_left2.x, lower_right2.y)
+
+    center2 = rg.Point(((lower_right2.x - lower_left2.x) / 2) + lower_left2.x,
+                       ((lower_right2.y - upper_left2.y) / 2) + upper_left2.y)
 
     line = rg.Line(center1, center2)
 
-
+    line.color = rectangle1.outline_color
+    line.thickness = 5
     line.attach_to(window)
-    for k in range(n):
 
-        line = rg.Line(center1, center2)
-        line.thickness = 5
+
+    change_x = abs((lower_right1.x - lower_left1.x)/2)
+    change_y = abs((lower_right1.y - upper_left1.y)/2)
+
+
+    for k in range(n-1):
+        center1.x = center1.x - change_x
+        center1.y = center1.y + change_y
+        center2.x = center2.x - change_x
+        center2.y = center2.y + change_y
+        line = rg.Line(center2, center1)
         if k % 2 == 0:
             line.color = rectangle2.outline_color
         else:
             line.color = rectangle1.outline_color
-
+        line.thickness = 5
         line.attach_to(window)
-
-        center1.x = center1.x - (((point2.x - point1.x) / 2) + point1.x)
-        center1.y = center1.y + (((point2.y - point1.y) / 2) + point1.y)
-
-        center2.x = center2.x - (((point4.x - point3.x) / 2) + point3.x)
-        center2.y = center2.y + (((point4.y - point3.y) / 2) + point3.y)
-
+        window.render()
     window.render()
+
     # ------------------------------------------------------------------
-    # TODO: 5. Implement and test this function.
+    # DONE: 5. Implement and test this function.
     #          Tests have been written for you (above).
     #
     # CONSIDER using the ACCUMULATOR IN GRAPHICS pattern,

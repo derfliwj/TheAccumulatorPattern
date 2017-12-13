@@ -97,7 +97,7 @@ def draw_parallel_lines(n, point, length, window):
     """
     x_left = point.x
     y_left = point.y
-    x_right = point.x + length
+    x_right = point.x +length
     y_right = point.y
 
     for _ in range(n):
